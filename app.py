@@ -44,7 +44,7 @@ def search():
     
     try:
         # Execute the notebook with papermill
-        pm.execute_notebook("test1.ipynb", "output.ipynb", parameters=params, kernel_name="python3")
+        pm.execute_notebook("test2.ipynb", "output.ipynb", parameters=params, kernel_name="python3")
         logger.debug("Notebook executed successfully")
     except Exception as e:
         logger.error(f"Error executing notebook: {str(e)}")
