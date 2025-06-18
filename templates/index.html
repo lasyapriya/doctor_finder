@@ -85,7 +85,7 @@
       align-items: center;
     }
 
-    h1, label, .select-selected, .select-items div {
+    h1 {
       font-size: 2.5rem;
       color: transparent;
       text-align: center;
@@ -96,15 +96,50 @@
       animation: gradientText 3s ease infinite;
       margin-bottom: 1rem;
       transition: transform 0.3s ease, text-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    h1:hover, label:hover, .select-selected:hover, .select-items div:hover {
+    h1 .icon {
+      font-size: 2.5rem;
+      margin-right: 8px;
+      color: #1E3A8A; /* Solid color for visibility */
+    }
+
+    h1:hover, .select-selected:hover, .select-items div:hover {
       transform: scale(1.05);
       text-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
     }
 
-    label, .select-selected, .select-items div {
+    label {
       font-size: 1.8rem;
+      color: #1E3A8A; /* Solid deep blue for headings */
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    label:hover {
+      transform: scale(1.05);
+      text-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    }
+
+    .icon {
+      font-size: 1.8rem;
+      margin-right: 8px;
+      color: #1E3A8A; /* Match icon color with heading */
+    }
+
+    .select-selected, .select-items div {
+      font-size: 1.8rem;
+      color: transparent;
+      background: linear-gradient(45deg, #1E3A8A, #2DD4BF);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: gradientText 3s ease infinite;
     }
 
     @keyframes fadeInDown {
@@ -217,10 +252,10 @@
       object-fit: cover;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       opacity: 1;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease; /* Reduced transition time for faster response */
       animation: pulse 2s infinite;
       position: relative;
-      top: -10px; /* Adjusted to move the icon downward */
+      top: -10px;
     }
 
     @keyframes pulse {
@@ -244,8 +279,20 @@
       z-index: 10000;
       background: url('https://i.pinimg.com/originals/d7/ae/01/d7ae0170d3d5ffcbaa7f02fdda387a3b.gif') no-repeat center center;
       background-size: 60%;
-      background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+      background-color: rgba(0, 0, 0, 0.8);
     }
+    .floating-icon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
   </style>
 </head>
 
@@ -268,9 +315,9 @@
       />
     </div>
 
-    <h1>🏥 Doctor Finder Pro</h1>
+    <h1><span class="icon">🏥</span> Doctor Finder Pro</h1>
     <form method="POST" action="/search" onsubmit="showLoading(event)">
-      <label for="speciality">🩺 Speciality (required)</label>
+      <label for="speciality"><span class="icon">🩺</span> Speciality (required)</label>
       <div class="custom-select" id="speciality-select-container">
         <div class="select-selected">Select Speciality</div>
         <div class="select-items select-hide">
@@ -281,7 +328,7 @@
       </div>
       <input type="hidden" name="speciality" id="speciality-hidden">
 
-      <label for="region">📍 Region (optional)</label>
+      <label for="region"><span class="icon">📍</span> Region (optional)</label>
       <div class="custom-select" id="region-select-container">
         <div class="select-selected">Select Region</div>
         <div class="select-items select-hide">
@@ -346,11 +393,12 @@
     function updateIcon(speciality) {
       const iconUrl = specialityIcons[speciality] || specialityIcons["default"];
       specialityIcon.classList.add("fade");
-      setTimeout(() => {
+      specialityIcon.addEventListener('transitionend', function handler() {
         specialityIcon.src = iconUrl;
         specialityIcon.alt = `${speciality} Icon`;
         specialityIcon.classList.remove("fade");
-      }, 300);
+        specialityIcon.removeEventListener('transitionend', handler);
+      }, { once: true });
     }
 
     // Custom dropdown functionality
